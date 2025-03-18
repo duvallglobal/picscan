@@ -3,9 +3,14 @@
 import { generateText } from "ai"
 import { perplexity } from "@ai-sdk/perplexity"
 import { analyzeImage, enhancePhoto } from "./api-clients"
-import type { ProductAnalysis } from "./types"
 import { ProductAnalysis, ProductListing, ApiResponse } from "./types";
+import { useToast } from "@/hooks/use-toast";export async function analyzeProductImage(imageUrl: string): Promise<ProductAnalysis> {
+  // ...
+}plugins: [require('tailwindcss-animate')],import { Font } from 'next/font';import type { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  // ...
+}
 export async function analyzeProductImage(imageUrl: string): Promise<ProductAnalysis> {
   try {
     // Analyze the image with Google Cloud Vision
@@ -26,56 +31,7 @@ export async function analyzeProductImage(imageUrl: string): Promise<ProductAnal
     const { text: title } = await generateText({
       model: perplexity("pplx-7b-online"),
       prompt: titlePrompt,
-      // next.config.js
-      const nextConfig = {
-        reactStrictMode: true,
-        env: {
-          NEXT_PUBLIC_PIXLR_API_KEY: process.env.PIXLR_API_CLIENT_KEY,
-          PIXLR_CLIENT_SECRET: process.env.PIXLR_CLIENT_SECRET,
-          GOOGLE_CLOUD_VISION_CREDENTIALS: process.env.GOOGLE_CLOUD_VISION_CREDENTIALS,
-          PERPLEXITY_API_KEY: process.env.PERPLEXITY_API_KEY,
-        },
-      }
-      
-      module.exports = nextConfig// lib/api-clients.ts
-      async function pixlrFetch(endpoint: string, options: RequestInit = {}) {
-        const baseUrl = "https://api.pixlr.com/v1"
-        const response = await fetch(`${baseUrl}${endpoint}`, {
-          ...options,
-          headers: {
-            Authorization: `Bearer ${process.env.PIXLR_API_CLIENT_KEY}`,
-            "Content-Type": "application/json",
-            ...options.headers,
-          },
-        })
-      
-        if (!response.ok) {
-          const errorText = await response.text()
-          throw new Error(`Pixlr API error: ${response.status} ${response.statusText} - ${errorText}`)
-        }
-      
-        return response.json()
-      }// lib/api-clients.ts
-      export async function enhancePhoto(imageUrl: string, options: PhotoEnhancementOptions) {
-        try {
-          const result = await pixlrFetch("/enhance", {
-            method: "POST",
-            body: JSON.stringify({
-              image: imageUrl,
-              ...options,
-            }),
-            headers: {
-              Authorization: `Bearer ${process.env.PIXLR_API_CLIENT_KEY}`,
-            },
-          })
-          return result
-        } catch (error) {
-          console.error("Error enhancing photo:", error)
-          throw error
-        }
-      }# .env file
-      PIXLR_API_CLIENT_KEY=67d89ad86080593ec7810b71
-      PIXLR_CLIENT_SECRET=7ec391b2990e4b6296abeaf144912a94: process.env.PERPLEXITY_API_KEY,
+      apiKey: process.env.PERPLEXITY_API_KEY,
     })
 
     // Generate product description
