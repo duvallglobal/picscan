@@ -1,7 +1,30 @@
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import ProductResults from "@/components/product-results"
-import { getProductAnalysis } from "@/lib/actions"
+import import * as actions from "@/lib/actions";
+
+export default async function ResultsPage({
+  searchParams,
+}: {
+  searchParams: { id?: string }
+}) {
+  const id = searchParams.id;
+
+  if (!id) {
+    notFound();
+  }
+
+  let productData;
+  try {
+    productData = await actions.getProductAnalysis(id);
+  } catch (error) {
+    console.error("Error fetching product analysis:", error);
+    // Redirect to error page or handle gracefully
+    notFound();
+  }
+
+  // ...
+} from "@/lib/actions"
 
 export default async function ResultsPage({
   searchParams,
