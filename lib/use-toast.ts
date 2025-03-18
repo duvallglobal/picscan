@@ -11,7 +11,7 @@ export function useToast() {
 
   const showToast = ({ title, description, variant = "default" }: ToastOptions) => {
     try {
-      toast({
+      toast.toast({
         title,
         description,
         variant,
