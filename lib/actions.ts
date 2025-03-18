@@ -4,6 +4,7 @@ import { generateText } from "ai"
 import { perplexity } from "@ai-sdk/perplexity"
 import { analyzeImage, enhancePhoto } from "./api-clients"
 import type { ProductAnalysis } from "./types"
+import { ProductAnalysis, ProductListing, ApiResponse } from "./types";
 
 export async function analyzeProductImage(imageUrl: string): Promise<ProductAnalysis> {
   try {
@@ -158,6 +159,52 @@ export async function exportToMarketplace(product: ProductAnalysis, platforms: s
   } catch (error) {
     console.error("Error exporting product:", error)
     throw error
+  }
+}
+
+export async function analyzeProductImage(imageFile: File): Promise<ApiResponse<ProductAnalysis>> {
+  try {
+    const formData = new FormData();
+    formData.append('image', imageFile);
+
+    const response = await fetch('/api/analyze-product-image', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to analyze image:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to analyze image'
+    };
+  }
+}
+
+export async function saveProductListing(product: Omit<ProductListing, 'id' | 'createdAt' | 'updatedAt'>): Promise<ApiResponse<ProductListing>> {
+  try {
+    const response = await fetch('/api/save-product', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(product),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to save product:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to save product'
+    };
   }
 }
 

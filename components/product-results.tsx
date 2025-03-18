@@ -20,6 +20,7 @@ export default function ProductResults({ productData }: { productData: ProductAn
   const [editingDescription, setEditingDescription] = useState(false)
   const [editingPrice, setEditingPrice] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -51,32 +52,32 @@ export default function ProductResults({ productData }: { productData: ProductAn
     }
   }
 
-  const handleExport = () => {
-    // In a real app, this would generate a file for export to marketplaces
-    const exportData = {
-      title,
-      description,
-      price: Number.parseFloat(price),
-      imageUrl: productData.imageUrl,
-      category: productData.category,
-      timestamp: new Date().toISOString(),
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      const csv = `Name,Price,Description\n${title},${price},${description}`;
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `product-${productData.id}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Product exported successfully"
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to export product",
+        variant: "destructive"
+      });
+    } finally {
+      setIsExporting(false);
     }
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `product-listing-${productData.id}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-
-    toast({
-      title: "Export complete",
-      description: "Your product listing has been exported as JSON.",
-    })
-  }
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">

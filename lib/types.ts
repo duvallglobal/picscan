@@ -1,12 +1,26 @@
+export interface ProductListing {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ProductAnalysis {
-  id: string
-  title: string
-  description: string
-  price: number
-  images: string[]
-  category: string
-  features: string[]
-  specifications: Record<string, string>
+  id: string;
+  productId: string;
+  confidence: number;
+  labels: string[];
+  metadata: Record<string, any>;
+  createdAt: Date;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
 }
 
 export interface MarketplaceListing {
@@ -22,5 +36,14 @@ export interface PhotoEnhancementResult {
   width: number
   height: number
   size: number
+}
+
+export interface ToastMessage {
+  type: 'success' | 'error' | 'info';
+  message: string;
+}
+
+export interface NotificationState {
+  messages: ToastMessage[];
 }
 
