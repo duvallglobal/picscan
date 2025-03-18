@@ -1,10 +1,13 @@
-"use server"
+'use server'
 
 import { generateText } from "ai"
 import { perplexity } from "@ai-sdk/perplexity"
 import { analyzeImage, enhancePhoto } from "./api-clients"
 import { ProductAnalysis, ProductListing, ApiResponse } from "./types";
 import { useToast } from "@/hooks/use-toast";
+import { LanguageModelV1 } from '@azure/ai-language';
+import { CallSettings, Prompt, ToolSet, ToolChoice } from '@azure/ai-language';
+import { revalidatePath } from "next/cache";
 
 export async function analyzeProductImage(imageUrl: string): Promise<ProductAnalysis> {
   try {
@@ -87,17 +90,12 @@ export async function analyzeProductImage(imageUrl: string): Promise<ProductAnal
   }
 }
 
-export async function saveProductListing(product: ProductAnalysis): Promise<void> {
-  try {
-    // In a real app, we would save to a database
-    // For this demo, we'll simulate saving
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+function processLabel(label: string): string {
+  // ...existing code...
+}
 
-    console.log("Product saved:", product)
-  } catch (error) {
-    console.error("Error saving product:", error)
-    throw error
-  }
+function processObject(obj: Record<string, any>): string {
+  // ...existing code...
 }
 
 export async function exportToMarketplace(product: ProductAnalysis, platforms: string[]): Promise<void> {
@@ -110,30 +108,6 @@ export async function exportToMarketplace(product: ProductAnalysis, platforms: s
   } catch (error) {
     console.error("Error exporting product:", error)
     throw error
-  }
-}
-
-export async function analyzeProductImage(imageFile: File): Promise<ApiResponse<ProductAnalysis>> {
-  try {
-    const formData = new FormData();
-    formData.append('image', imageFile);
-
-    const response = await fetch('/api/analyze-product-image', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to analyze image:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to analyze image'
-    };
   }
 }
 
@@ -158,4 +132,9 @@ export async function saveProductListing(product: Omit<ProductListing, 'id' | 'c
     };
   }
 }
+
+// Client-side references
+export const saveProductListingRef = createServerReference(saveProductListing.name, callServer, findSourceMapURL);
+export const exportToMarketplaceRef = createServerReference(exportToMarketplace.name, callServer, findSourceMapURL);
+export const analyzeProductImageRef = createServerReference(analyzeProductImage.name, callServer, findSourceMapURL);
 
