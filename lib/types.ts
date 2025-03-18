@@ -10,11 +10,21 @@ export interface ProductListing {
 
 export interface ProductAnalysis {
   id: string;
-  productId: string;
-  confidence: number;
-  labels: string[];
-  metadata: Record<string, any>;
-  createdAt: Date;
+  title: string;
+  description: string;
+  suggestedPrice: number;
+  imageUrl: string;
+  category: string;
+  features: string[];
+  specifications: Record<string, string>;
+  similarProducts: SimilarProduct[];
+  competitorProducts: SimilarProduct[];
+}
+
+export interface SimilarProduct {
+  title: string;
+  price: number;
+  imageUrl: string;
 }
 
 export interface ApiResponse<T> {
