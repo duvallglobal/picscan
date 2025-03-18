@@ -4,13 +4,8 @@ import { generateText } from "ai"
 import { perplexity } from "@ai-sdk/perplexity"
 import { analyzeImage, enhancePhoto } from "./api-clients"
 import { ProductAnalysis, ProductListing, ApiResponse } from "./types";
-import { useToast } from "@/hooks/use-toast";export async function analyzeProductImage(imageUrl: string): Promise<ProductAnalysis> {
-  // ...
-}plugins: [require('tailwindcss-animate')],import { Font } from 'next/font';import type { Metadata } from 'next';
+import { useToast } from "@/hooks/use-toast";
 
-export const metadata: Metadata = {
-  // ...
-}
 export async function analyzeProductImage(imageUrl: string): Promise<ProductAnalysis> {
   try {
     // Analyze the image with Google Cloud Vision
