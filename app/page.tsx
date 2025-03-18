@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import UploadForm from "@/components/upload-form"
+import ErrorBoundary from "@/components/error-boundary"
 import { Toaster } from "@/components/ui/toaster"
 
 export default function Home() {
@@ -10,13 +11,14 @@ export default function Home() {
           Product Listing Accelerator
         </h1>
         <p className="text-center text-slate-600 dark:text-slate-400 mb-12 max-w-2xl mx-auto">
-          Upload product photos and let AI generate descriptions, titles, and pricing suggestions to speed up your
-          marketplace listings.
+          Upload product photos and let AI generate descriptions, titles, and pricing suggestions.
         </p>
 
-        <Suspense fallback={<div className="text-center">Loading upload form...</div>}>
-          <UploadForm />
-        </Suspense>
+        <ErrorBoundary error={null} reset={() => window.location.reload()}>
+          <Suspense fallback={<div className="text-center">Loading upload form...</div>}>
+            <UploadForm />
+          </Suspense>
+        </ErrorBoundary>
       </div>
       <Toaster />
     </main>

@@ -19,6 +19,8 @@ export interface ProductAnalysis {
   specifications: Record<string, string>;
   similarProducts: SimilarProduct[];
   competitorProducts: SimilarProduct[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface SimilarProduct {

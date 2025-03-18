@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server"
 import { ImageAnnotatorClient } from "@google-cloud/vision"
+import { z } from 'zod'
+
+const requestSchema = z.object({
+  imageUrl: z.string().url()
+})
 
 let visionClient: ImageAnnotatorClient
 
@@ -13,14 +18,18 @@ try {
 
 export async function POST(request: Request) {
   try {
-    const { imageUrl } = await request.json()
+    const body = await request.json()
+    const validatedData = requestSchema.parse(body)
 
     if (!visionClient) {
-      throw new Error("Google Cloud Vision client not initialized")
+      return NextResponse.json(
+        { error: "Vision API client not initialized" },
+        { status: 500 }
+      )
     }
 
     const [result] = await visionClient.annotateImage({
-      image: { source: { imageUri: imageUrl } },
+      image: { source: { imageUri: validatedData.imageUrl } },
       features: [
         { type: "LABEL_DETECTION" },
         { type: "OBJECT_LOCALIZATION" },
@@ -28,6 +37,13 @@ export async function POST(request: Request) {
         { type: "TEXT_DETECTION" },
       ],
     })
+
+    if (!result) {
+      return NextResponse.json(
+        { error: "Failed to analyze image" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
       labels: result.labelAnnotations || [],
@@ -37,7 +53,10 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error("Error analyzing image:", error)
-    return NextResponse.json({ error: "Failed to analyze image" }, { status: 500 })
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to analyze image" },
+      { status: 500 }
+    )
   }
 }
 
